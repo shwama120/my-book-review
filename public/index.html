@@ -2,11 +2,11 @@
 <html>
 <head>
     <!-- 웹 브라우저 탭에 표시될 페이지의 제목을 설정합니다. -->
-    <title>책 리뷰</title>
+    <title>북 로그</title>
 </head>
 <body>
     <!-- 페이지 최상단에 큰 제목을 표시합니다. -->
-    <h1>책 리뷰</h1>
+    <h1>북 로그</h1>
     
     <!-- 사용자에게 입력받은 리뷰 데이터를 '/api/reviews' 경로로 전송(POST방식)하는 폼 태그입니다. -->
     <form action="/api/reviews" method="POST">
@@ -19,11 +19,11 @@
         <!-- '도서'와 '웹툰' 중 하나를 선택할 수 있는 드롭다운 메뉴입니다. -->
         <select name="category"><option>도서</option><option>웹툰</option></select><br>
         
-        <!-- 1점에서 5점 사이의 숫자만 입력할 수 있는 평점 입력 칸입니다. -->
-        <input type="number" name="rating" min="1" max="5" placeholder="평점">
+        <!-- 사용자가 현재까지 읽은 책의 페이지를 저장하는 영역입니다. -->
+        <input type="number" name="rating" min="1" max="1000" placeholder="쪽수"> <br>
         
-        <!-- 긴 텍스트 형태로 한 줄 평(리뷰 내용)을 입력받는 영역입니다. -->
-        <textarea name="review" placeholder="한 줄 평"></textarea><br>
+        <!-- 사용자가 현재 읽은 책의 간략한 감상평을 남기는 영역입니다. -->
+        <textarea name="review" placeholder="감상평"></textarea><br>
         
         <!-- 작성한 리뷰 데이터를 서버로 전송하는 등록 버튼입니다. -->
         <button type="submit">등록</button>
