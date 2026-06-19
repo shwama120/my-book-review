@@ -2,50 +2,79 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <!-- 1. 브라우저 탭에 표시될 메인 제목 설정 -->
     <title>북 로그</title>
+    
+    <!-- 2. 화면 스타일링을 위한 CSS 정의 -->
     <style>
         body { font-family: sans-serif; padding: 20px; }
         h1 { font-size: 2rem; font-weight: bold; margin-bottom: 20px; }
+        /* 입력창, 선택창, 텍스트박스의 기본 너비, 여백, 정렬 방식을 일괄 지정 */
         input[type="text"], select, textarea { 
             width: 300px; padding: 5px; margin-bottom: 10px; display: block; box-sizing: border-box; 
         }
+        /* 쪽수 입력창은 숫자가 들어가므로 너비를 조금 더 좁게(120px) 설정 */
         input[name="page_count"] { width: 120px; }
+        /* 감상평 입력 영역의 세로 높이 지정 */
         textarea { height: 80px; }
+        /* 등록 버튼에 마우스 커서를 올렸을 때 손가락 모양 포인터가 나오도록 설정 */
         button { padding: 5px 15px; cursor: pointer; }
+        /* 하단 목록 영역: 위쪽 외곽선과 여백을 주어 입력 폼과 시각적으로 분리 */
         .list-container { margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px; width: 500px; }
+        /* 목록 내 개별 아이템: 항목 간 구분을 위한 연한 아래쪽 테두리 추가 */
         .log-item { padding: 10px 0; border-bottom: 1px solid #eee; }
+        /* 개별 아이템의 링크 스타일: 밑줄을 없애고 글자를 두껍게 설정 */
         .log-item a { text-decoration: none; color: black; font-weight: bold; }
+        /* 링크에 마우스를 올렸을 때만 밑줄이 생기도록 효과 추가 */
         .log-item a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
+    <!-- 3. 페이지 메인 타이틀 -->
     <h1>북 로그</h1>
 
-    <!-- 데이터 입력 폼 -->
-    <form action="/add" method="POST">
+    <!-- 
+      4. 새로운 독서 기록을 입력받는 폼(Form):
+      - 서버의 POST '/api/logs' 라우터로 데이터를 전송함
+      - 각 입력창의 'name' 속성값은 DB 스키마 필드명(req.body)과 일치해야 함
+    -->
+    <form action="/api/logs" method="POST">
+        <!-- 제목 입력: 필수 입력 항목(required) -->
         <input type="text" name="title" placeholder="제목" required>
+        <!-- 작가 입력: 필수 입력 항목(required) -->
         <input type="text" name="author" placeholder="작가" required>
+        <!-- 카테고리 선택창: 도서 또는 웹툰 중 선택 (기본값: 도서) -->
         <select name="category">
             <option value="도서">도서</option>
             <option value="웹툰">웹툰</option>
         </select>
+        <!-- 쪽수 및 감상평 입력창 (선택 사항) -->
         <input type="text" name="page_count" placeholder="쪽수">
         <textarea name="review" placeholder="감상평"></textarea>
+        <!-- 서버로 폼 데이터를 최종 제출하는 버튼 -->
         <button type="submit">등록</button>
     </form>
 
-    <!-- 저장된 데이터 목록 영역 -->
+    <!-- 5. 데이터베이스에서 가져온 최근 독서 기록 목록 출력 영역 -->
     <div class="list-container">
         <h3>최근 기록 목록</h3>
-        <!-- 서버가 넣어준 데이터를 반복문으로 출력 (EJS 템플릿 엔진 기준 예시) -->
-        <% logs.forEach(function(item) { %>
-            <div class="log-item">
-                <!-- 글 제목을 누르면 상세 페이지(/view/아이디)로 이동 -->
-                <a href="/view/<%= item.id %>"><%= item.title %></a> 
-                <span style="color: #666; font-size: 0.9rem;">- <%= item.author %></span>
-            </div>
-        <% }); %>
+        
+        <!-- EJS 조건문: 서버에서 전달한 logs 배열이 존재하고, 그 안에 데이터가 1개 이상 있는지 확인 -->
+        <% if (logs && logs.length > 0) { %>
+            <!-- EJS 반복문: logs 배열을 순회하며 개별 데이터(item)를 순서대로 화면에 렌더링 -->
+            <% logs.forEach(function(item) { %>
+                <div class="log-item">
+                    <!-- 책 제목을 클릭하면 해당 데이터의 고유 ID를 가진 상세 페이지('/log/데이터ID')로 이동 -->
+                    <a href="/log/<%= item._id %>"><%= item.title %></a> 
+                    <!-- 회색의 작은 글씨로 작가 이름을 제목 옆에 표시 -->
+                    <span style="color: #666; font-size: 0.9rem;">- <%= item.author %></span>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <!-- 등록된 데이터가 하나도 없을 경우 보여줄 예외 처리 문구 -->
+            <p>등록된 로그가 없습니다.</p>
+        <% } %>
     </div>
 
 </body>

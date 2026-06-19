@@ -2,32 +2,66 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <!-- 1. 동적 타이틀 설정: 서버에서 전달받은 책 제목(item.title)을 브라우저 탭에 표시 -->
     <title><%= item.title %> - 상세 보기</title>
+    
+    <!-- 2. 화면 스타일링을 위한 CSS 정의 -->
     <style>
         body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        /* 컨테이너: 상세 내용을 모아두는 500px 너비의 박스 영역 */
         .container { width: 500px; border: 1px solid #ccc; padding: 20px; background: #fafafa; }
-        h1 { margin-top: 0; font-size: 1.8rem; }
-        .info { color: #555; margin-bottom: 15px; font-size: 0.95rem; }
-        .review-text { background: white; padding: 15px; border: 1px solid #ddd; min-height: 100px; }
-        .back-btn { display: inline-block; margin-top: 20px; padding: 6px 12px; background: #333; color: white; text-decoration: none; font-size: 0.9rem; }
+        /* 리뷰 본문 박스: 흰색 배경에 외곽선과 여백을 주어 가독성을 높임 */
+        .review-text { background: white; padding: 15px; border: 1px solid #ddd; margin: 15px 0; }
+        /* 하단 버튼 영역: 목록 이동, 수정, 삭제 버튼 간의 간격 조절 */
+        .actions { margin-top: 20px; }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <!-- 3. 도서 제목 출력 -->
         <h1><%= item.title %></h1>
+        
+        <!-- 4. 도서 기본 정보 및 메타데이터 출력 영역 -->
         <div class="info">
+            <!-- 작가 이름 출력 -->
             <strong>작가:</strong> <%= item.author %> | 
+            <!-- 도서 카테고리(분류) 출력 -->
             <strong>분류:</strong> <%= item.category %> | 
-            <strong>쪽수:</strong> <%= item.page_count || '미입력' %>쪽
+            <!-- 쪽수 출력: 값이 없거나 공백이면 '미입력'이라는 기본 텍스트를 출력 (단항 논리합 연산자 사용) -->
+            <strong>쪽수:</strong> <%= item.page_count || '미입력' %>쪽<br>
+            <!-- 작성일 출력: 서버에서 가공해서 넘겨준 'YYYY-MM-DD' 형태의 날짜 데이터 바인딩 -->
+            <strong>작성일:</strong> <%= date %>
         </div>
         
+        <!-- 5. 사용자가 작성한 감상평(리뷰) 본문 영역 -->
         <div class="review-text">
+            <!-- 리뷰 내용 출력: 저장된 내용이 없을 경우 '작성된 감상평이 없습니다.'를 기본값으로 출력 -->
             <%= item.review || '작성된 감상평이 없습니다.' %>
         </div>
 
-        <!-- [리다이렉트 링크] 누르면 다시 메인 목록 화면('/')으로 돌아감 -->
-        <a href="/" class="back-btn">목록으로 돌아가기</a>
+        <!-- 6. 사용자가 취할 수 있는 작업 버튼(링크 및 폼) 영역 -->
+        <div class="actions">
+            <!-- 메인 화면(목록)으로 돌아가는 하이퍼링크 -->
+            <a href="/">목록으로 돌아가기</a> |
+            
+            <!-- 수정 페이지 이동 버튼: 해당 데이터의 고유 ID(_id)를 URL 경로에 포함하여 수정 폼 요청 -->
+            <a href="/edit/<%= item._id %>">수정하기</a> |
+
+            <!-- 
+              삭제 기능 구현을 위한 POST 폼:
+              - method-override 미들웨어가 인식할 수 있도록 액션 주소 뒤에 '?_method=DELETE' 쿼리 스트링을 붙임
+              - display:inline 스타일을 주어 다른 링크들과 한 줄에 나란히 배치
+            -->
+            <form action="/api/logs/<%= item._id %>?_method=DELETE" method="POST" style="display:inline;">
+                <!-- 
+                  삭제하기 버튼: 
+                  - 클릭 시 브라우저 내장 알림창(confirm)을 띄움
+                  - 사용자가 '취소'를 누르면 false가 반환되어 폼 제출(삭제 요청)이 취소됨
+                -->
+                <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
+            </form>
+        </div>
     </div>
 
 </body>
