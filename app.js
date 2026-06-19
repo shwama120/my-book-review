@@ -37,6 +37,16 @@ app.use(express.static('public'));              // CSS, 이미지 등 정적 파
 // [기능 라우터 (API 및 웹 페이지 경로 정의)]
 // ---------------------------------------------------------
 
+// [추가] 메인 페이지 (목록 조회 후 index.ejs 렌더링)
+app.get('/', async (req, res) => {
+  try {
+    const logs = await Log.find().sort({ created_at: -1 });
+    res.render('index', { logs: logs });
+  } catch (err) {
+    res.status(500).send("데이터를 불러오지 못했습니다.");
+  }
+});
+
 // 1. 목록 조회 API (JSON 형식 데이터 응답)
 app.get('/api/logs', async (req, res) => {
   // DB의 모든 로그를 조회하고, 최신순(created_at 기준 내림차순: -1)으로 정렬하여 변수에 저장
