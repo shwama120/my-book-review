@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>북 로그</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        h1 { font-size: 2rem; font-weight: bold; margin-bottom: 20px; }
+        input[type="text"], select, textarea { 
+            width: 300px; padding: 5px; margin-bottom: 10px; display: block; box-sizing: border-box; 
+        }
+        input[name="page_count"] { width: 120px; }
+        textarea { height: 80px; }
+        button { padding: 5px 15px; cursor: pointer; }
+        .list-container { margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px; width: 500px; }
+        .log-item { padding: 10px 0; border-bottom: 1px solid #eee; }
+        .log-item a { text-decoration: none; color: black; font-weight: bold; }
+        .log-item a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <h1>북 로그</h1>
+
+    <!-- 데이터 입력 폼 -->
+    <form action="/add" method="POST">
+        <input type="text" name="title" placeholder="제목" required>
+        <input type="text" name="author" placeholder="작가" required>
+        <select name="category">
+            <option value="도서">도서</option>
+            <option value="웹툰">웹툰</option>
+        </select>
+        <input type="text" name="page_count" placeholder="쪽수">
+        <textarea name="review" placeholder="감상평"></textarea>
+        <button type="submit">등록</button>
+    </form>
+
+    <!-- 저장된 데이터 목록 영역 -->
+    <div class="list-container">
+        <h3>최근 기록 목록</h3>
+        <!-- 서버가 넣어준 데이터를 반복문으로 출력 (EJS 템플릿 엔진 기준 예시) -->
+        <% logs.forEach(function(item) { %>
+            <div class="log-item">
+                <!-- 글 제목을 누르면 상세 페이지(/view/아이디)로 이동 -->
+                <a href="/view/<%= item.id %>"><%= item.title %></a> 
+                <span style="color: #666; font-size: 0.9rem;">- <%= item.author %></span>
+            </div>
+        <% }); %>
+    </div>
+
+</body>
+</html>
