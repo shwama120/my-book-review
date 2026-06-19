@@ -54,7 +54,7 @@ app.get('/api/logs/:id', async (req, res) => {
   try {
     const logId = req.params.id;
     // 몽고DB의 고유 _id 값을 기준으로 딱 하나의 데이터만 조회합니다.
-    const log = await Review.findById(reviewId);
+    const log = await Log.findById(logId);
     
     if (log) {
       res.json(log);
@@ -72,7 +72,7 @@ app.post('/api/logs', async (req, res) => {
     const { title, author, category, page_count, review } = req.body;
     
     // 구조 분해 할당을 통해 안전하게 데이터를 추출하여 DB에 저장합니다.
-    await new log({ title, author, category, page_count, review }).save();
+    await new Log({ title, author, category, page_count, review }).save();
     
     // 저장이 끝나면 메인 페이지('/')로 리다이렉트 시켜 화면을 새로고침합니다.
     res.redirect('/');
