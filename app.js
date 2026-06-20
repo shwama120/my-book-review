@@ -26,7 +26,7 @@ const LogSchema = new mongoose.Schema({
 });
 
 // 5. 스키마를 기반으로 한 DB 작업용 모델(Model) 생성
-const Log = mongoose.model('Log', LogSchema);   // 'Log' 모델 생성 (실제 DB에는 'logs'라는 복수형 컬렉션이 생성됨)
+const Log = mongoose.model('Log', LogSchema, 'logs');   // 'Log' 모델 생성 (실제 DB에는 'logs'라는 복수형 컬렉션이 생성됨)
 
 // 6. Express 애플리케이션 미들웨어 및 뷰 엔진 설정
 app.set('view engine', 'ejs');                  // HTML 화면을 동적으로 생성할 템플릿 엔진으로 EJS 설정
@@ -44,7 +44,7 @@ app.get('/', async (req, res) => {
     const logs = await Log.find().sort({ created_at: -1 });
     res.render('index', { logs: logs });
   } catch (err) {
-    res.status(500).send("데이터를 불러오지 못했습니다.");
+    res.status(500).send("데이터 조회 실패: " + err.message);
   }
 });
 
@@ -75,10 +75,11 @@ app.post('/api/logs', async (req, res) => {
   try {
     // 클라이언트가 보낸 폼 데이터(req.body)를 활용해 새로운 Log 객체를 만들고 DB에 저장
     await new Log(req.body).save();
-    res.redirect('/'); // 저장이 끝나면 서버가 브라우저에게 메인 화면('/')으로 이동하라고 명령(리다이렉트)
+    res.redirect('/'); // 저장이 끝나면 서버가 브라우저에게 메인 화면('/')으로 이동하라고 명령(리다이렉트) 
   } catch (err) {
     // 서버 오류 발생 시 500 상태 코드와 실패 메시지 전송
     res.status(500).send("저장 실패");
+    
   }
 });
 
