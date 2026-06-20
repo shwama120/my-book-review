@@ -1,4 +1,5 @@
 // 1. 필요한 외부 패키지(모듈) 로드
+require('dotenv').config(); // 맨 윗줄에 추가
 const express = require('express');          // 웹 서버 구축을 위한 Express 프레임워크 로드
 const mongoose = require('mongoose');        // MongoDB 데이터를 관리하기 위한 객체 모델링 라이브러리(Mongoose) 로드
 const bodyParser = require('body-parser');    // HTTP 요청 본문(req.body)의 데이터를 파싱하기 위한 미들웨어 로드
@@ -7,7 +8,7 @@ const methodOverride = require('method-override'); // HTML Form 태그에서 지
 // 2. 서버 및 데이터베이스 환경 설정
 const app = express();                       // Express 애플리케이션 객체 생성
 const PORT = process.env.PORT || 3000;       // 배포 환경의 포트 번호를 사용하거나, 없을 경우 3000번 포트 지정
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/booklog'; // 접속할 MongoDB 데이터베이스 주소 설정
+const MONGO_URI = process.env.MONGO_URI // 접속할 MongoDB 데이터베이스 주소 설정
 
 // 3. MongoDB 데이터베이스 연결 설정
 mongoose.connect(MONGO_URI)                  // 정의된 DB 주소로 연결 시도 (Promise 패턴 사용)
