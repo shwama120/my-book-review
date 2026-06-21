@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>리뷰 수정하기</title>
+</head>
+<body>
+    <h1>리뷰 수정</h1>
+    <form action="/api/logs/<%= item._id %>?_method=PUT" method="POST">
+        <input type="text" name="title" value="<%= item.title %>" required><br>
+        <input type="text" name="author" value="<%= item.author %>" required><br>
+        <textarea name="review"><%= item.review %></textarea><br>
+        <button type="submit">수정 완료</button>
+    </form>
+    <a href="/">취소</a>
+</body>
+</html>
